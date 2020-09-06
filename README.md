@@ -121,7 +121,7 @@ done
 #6.5. 从GWAS catalog (https://www.ebi.ac.uk/gwas) ) 寻找已知信号，通过R 的plot()来比较该 GWAS跟已经发表过的信号的EAF和BETA的一致性。
 
 
-#6.6. 对于有统计显著性的重点locus，可以ZOOM画图http://locuszoom.org/
+#6.6. 对于有统计显著性的重点locus，可以ZOOM 画图 (http://locuszoom.org)
 
 
  
@@ -134,6 +134,7 @@ GnomAD https://gnomad.broadinstitute.org
 ```
 
 #7.2.	GWAS数据的功能性注释
+
 ```
 post-GWAS analysis pipeline (github.com/Ensembl/postgap).
 ```
@@ -153,13 +154,15 @@ done
 
 
 #7.4.	多基因风险评分PRS
+
 ```
 PRSice: https://github.com/choishingwan/PRSice
 LDpred2 https://privefl.github.io/bigsnpr/articles/LDpred2.html
 ```
 
 
-#7.5.	因果分析 Mendelian Randomization，GSMR （https://cnsgenomics.com/software/gsmr/
+#7.5.	因果分析 Mendelian Randomization，GSMR (https://cnsgenomics.com/software/gsmr)
+
 ```
 for trait in RHR; do
     echo "$trait $dir/$trait.gcta.txt" > $trait.exposure
@@ -175,6 +178,7 @@ done
 
 
 #7.6. TWAS (http://gusevlab.org/projects/fusion/)
+
 ```
 dir_tw=/mnt/d/data/twas_data
 dir_gt=$dir_tw/GTEx_v7_multi_tissue
@@ -192,6 +196,7 @@ done
 
 
 # #8. 参考文献
+
 ```
 2018. Adult height and risk of 50 diseases: a combined epidemiological and genetic analysis
  
