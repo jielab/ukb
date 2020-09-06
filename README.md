@@ -79,10 +79,20 @@ for (i in 1:nrow(ICDnames)) {
 	trait_inv = qnorm((rank(trait_res,na.last="keep")-0.5) / length(na.omit(trait_res)))
 ```
 
- 
+
+# #5. GWAS 运行
+目前GWAS 由专人负责运行，以下链接可以随时下载公开的GWAS数据
+
+```
+*. Cardiovascular disease genomics http://www.broadcvdi.org/
+*. fastgwa.info
+```
+
+
 # #5. GWAS 后续常规分析 
 
-#5.1. 从千人基因组网站（https://www.internationalgenome.org/data）下载基因数据，作为LD计算的参考。点击该页面 Phase 3 对应的VCF，下载所有以ALL开头的文件。可将下载后的VCF文件的名字改短为ALL.chr*.gz 这样的名字。然后用 PLINK 将 VCF格式转换为 PLINK格式 
+
+#5.1. 从千人基因组网站下载基因数据 https://www.internationalgenome.org/data 作为LD计算的参考。点击该页面 Phase 3 对应的VCF，下载所有以ALL开头的文件。可将下载后的VCF文件的名字改短为ALL.chr*.gz 这样的名字。然后用 PLINK 将 VCF格式转换为 PLINK格式 
 
 ```
 for chr in {1..22}; do
@@ -90,11 +100,14 @@ for chr in {1..22}; do
 done  
 ```
 
+
 #5.2. 提取 significant 信号，添加简单的注释
 	plink --annotate MY.gwas.txt NA attrib=snp129.attrib.txt ranges=glist-hg19 --border 10 --pfilter 5e-8 --out MY.gwas.top
 
+
 #5.3. 提取 signifianct & independent 信号
 用PLINK --clump 命令，如下。如果不考虑 LD, 只考虑距离，可以任意指定一个 LDfile同时设置  --clump-r2=0。
+
 ```
 for chr in {1..22}; do
   plink --bfile chr$chr --clump Height.2018.txt --clump-p1 1e-08 --clump-p2 1e-8 --clump-kb 1000 --clump-r2 0 --out chr$chr
@@ -103,7 +116,9 @@ done
 
 #5.4. 用上述方法生成一个比较小的文件，用R里面的qqman package，或者我写的mhplot.R代码，绘制Manhattan plot，也可以绘制QQ plot（不太常用）。
 
+
 #5.5. 从GWAS catalog (https://www.ebi.ac.uk/gwas) ) 寻找已知信号，通过R 的plot()来比较该 GWAS跟已经发表过的信号的EAF和BETA的一致性。
+
 
 #5.6. 对于有统计显著性的重点locus，可以ZOOM画图http://locuszoom.org/
 
@@ -111,6 +126,9 @@ done
  
 # #6. GWAS的深度分析 
 
+
+#6.1.	SNP频率和基本注解查询
+	GnomAD https://gnomad.broadinstitute.org
 
 #6.2.	GWAS数据的功能性注释
  post-GWAS analysis pipeline (github.com/Ensembl/postgap).
@@ -125,14 +143,6 @@ done
 #6.5.	因果分析 Mendelian Randomization，
 	GSMR （https://cnsgenomics.com/software/gsmr/
 	MendelianRandomization R package
-
-#6.6.	SNP频率
-	GnomAD https://gnomad.broadinstitute.org
-
-
-公开的GWAS数据
-*. Cardiovascular disease genomics http://www.broadcvdi.org/
-*. fastgwa.info 上下载任意 GWAS数据，进行测试。
 
 
 
