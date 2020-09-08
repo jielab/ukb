@@ -94,10 +94,11 @@ fastgwa.info
 # #6. GWAS 后续常规分析 
 
 
-#6.1. 从千人基因组网站下载基因数据 https://www.internationalgenome.org/data 作为LD计算的参考。
+#6.1. 从千人基因组网站下载基因数据， 作为LD计算的参考。我们将千人基因组数据简称为 g1k.
+之所有不简称为 1kg，是因为有的软件要求变量不能以数字开头。
 
 ```
-在 Available data 下面，点击该页面 Phase 3 对应的 VCF 链接，可以看到以 “ALL.” 开头的文件，可以一个一个直接点击链接下载，也可以用下面的命令下载, 并且随之将下载的VCF文件转换为PLINK格式
+打开 https://www.internationalgenome.org/data，在 Available data 下面，点击该页面 Phase 3 对应的 VCF 链接，可以看到以 “ALL.” 开头的文件，可以一个一个直接点击链接下载，也可以用下面的命令下载, 并且随之将下载的VCF文件转换为PLINK格式
 
 由于 chrX, chrY, chrMT 的文件名字跟其它染色体不同，用下面的命令下载的时候，里面的文件名字也需要相应调整。 
 
@@ -157,11 +158,13 @@ done
 GnomAD https://gnomad.broadinstitute.org
 ```
 
+
 #7.2.	GWAS数据的功能性注释
 
 ```
 post-GWAS analysis pipeline (github.com/Ensembl/postgap).
 ```
+
 
 #7.3.	多个GWAS 之间的 genetic correlation 分析, LDSC (https://github.com/bulik/ldsc)
 
@@ -185,7 +188,11 @@ LDpred2 https://privefl.github.io/bigsnpr/articles/LDpred2.html
 ```
 
 
-#7.5.	因果分析 Mendelian Randomization，GSMR (https://cnsgenomics.com/software/gsmr)
+#7.5.	因果分析 Mendelian Randomization，GSMR (https://cnsgenomics.com/software/gcta/#GSMR)
+
+GTCA 里面的 GSMR也需要用到上述提取的 g1k 基因数据作为 计算LD 的参考。
+由于上述的 gak 数据是按照染色体分开的20多个数据，这个时候就需要用 --mbile （而不是 --bfile）来表明需要读取多个（multiple）bfile.
+可以用这个命令生成一个 bfile.list 然后用到下面的命令里： seq 1 22 | xargs -n1 -I % echo chr% > bfile.list
 
 ```
 for trait in RHR; do
@@ -196,7 +203,7 @@ for trait in RHR; do
             echo "$trait2 $dir/$trait2.gcta.txt" >> $trait.outcome
         fi
     done
-   gcta64 --bfile g1k.EUR/chr$chr --gsmr-file $trait.exposure $trait.outcome --gsmr-direction 2 --gwas-thresh 5e-8 --effect-plot --out $trait
+   gcta64 --mbfile bfile.list --gsmr-file $trait.exposure $trait.outcome --gsmr-direction 2 --gwas-thresh 5e-8 --effect-plot --out $trait
 done
 ```
 
