@@ -1,4 +1,6 @@
 
+![Figure 1](./pictures/middle.jpg)
+
 # #1. 下载和处理 HAPMAP3 genotype 数据, 一般作为 LD 计算的 reference panel
 
 ```
@@ -49,9 +51,7 @@ done
 
 ```
 
-Hapmap 和 千人基因组， 这可是初中课本讲到的内容哦。 
-
-![Figure 1](./pictures/middle.jpg)
+![Figure 2](./pictures/UKB.jpg)
 
 
 
@@ -118,6 +118,7 @@ awk -v cn=$cnt -v co="J440" '{if (NR==1) print "IID", co; else {c=(cn-1)/2; prin
 
 ```
 
+![Figure 3](./pictures/GWAS.jpg)
 
 # #5. 对表型数据进行 GWAS 运行之前的处理
 
