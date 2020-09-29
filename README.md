@@ -51,7 +51,7 @@ done
 
 ```
 
-![Figure 2](./pictures/UKB.jpg)
+![Figure 2](./pictures/ukb.jpg)
 
 
 
