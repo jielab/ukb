@@ -35,23 +35,22 @@ done
 awk '$3=="EUR" {print $1,$1}' integrated_call_samples_v3.20130502.ALL.panel > g1k.EUR.keep
 awk '$3=="EAS" {print $1,$1}' integrated_call_samples_v3.20130502.ALL.panel > g1k.EAS.keep
 
-然后可以用 PLINK生成某一个特定人种的基因数据。下面的这个PLINK命令，可以写到上面的 PLINK 命令的下面，就不用写两次 "for chr in {1..22}" 了。
-当然，也可以不用单独生成每个人种（比如EUR）的PLINK格式 基因数据，直接用一个包含所有样本的基因数据就可以了，只需要记住在相关的命令里面再写上 --keep g1k.EUR.keep（或对应的人种）。
-for chr in {1..22}; do
-  plink --bfile chr$chr --keep g1k.EUR.keep --make-bed --out EUR.chr$chr
-done
+然后可以用 PLINK --keep g1k.EUR.keep 生成某一个特定人种的基因数据。当然，如果不想生成太大的基因数据，就只保留一个所有人的数据，后续的PLINK命令记得用 --keep g1k.EUR.keep 就行。
 
 不论是有所有2504个人基因数据的PLINK文件，还是只有某一个人种的PLINK文件，每个染色体都是单独的文件。
 后续跑 GWAS 或提取 PRS 的时候，也是每条染色体的数据分开来跑，这样就可以进行并行计算（parallel computing）。
 一般不建议把所有的染色体的数据合并成一个完整的单一的基因数据，毕竟8千多万个SNP，文件太大了，很多软件根本运行不了。
 
-三个注意事项：
-1. 其实，PLINK的网站 https://www.cog-genomics.org/plink/2.0/ 上也有千人基因组的数据，点击左下方菜单“1000 genomes phase3” 链接，按照操作下载和处理。
-2. 不管是哪个方法得到的PLINK格式的数据，有的软件不允许 .bim 文件里面的 SNP 名字有重复，这个时候可以把原来的 .bim 文件备份一下，然后生成新的没有重复名字的 .bam 文件
-	awk '{if(array[$2]=="Y") {i++; $2=$2".DUP"i}; print $0; array[$2]="Y"}' chr1.bim.COPY > chr1.bim 
-3. g1k总共有8千多万个SNP，数据太大。如果 GSMR分析的GWAS文件总共才2百万个SNP，如果 GSMR --mbfile 命令太慢，可以考虑先用 plink --extract 命令生成一个只有那2百万个SNP的 g1k.new数据。 
+```
+
+其实，PLINK的网站上也有千人基因组的数据，点击左下方菜单“1000 genomes phase3” 链接，按照操作下载和处理。
+不管是哪个方法得到的PLINK格式的数据，有的软件不允许 .bim 文件里面的 SNP 名字有重复，这个时候可以用下面的命令来处理
 
 ```
+cp chr1.bim chr1.bim.COPY
+awk '{if(array[$2]=="Y") {i++; $2=$2".DUP"i}; print $0; array[$2]="Y"}' chr1.bim.COPY > chr1.bim 
+```
+
 
 ![Figure 2](./pictures/ukb.jpg)
 
