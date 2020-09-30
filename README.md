@@ -15,7 +15,7 @@
 
 ```
 
-# 1.2. 1000 genomes (千人基因组) genotype 数据， 一般作为 imputation 的 reference panel.
+#1.2. 1000 genomes (千人基因组) genotype 数据， 一般作为 imputation 的 reference panel.
 
 ```
 打开 https://www.internationalgenome.org/data，在 Available data 下面，点击该页面 Phase 3 对应的 VCF 链接，
@@ -71,12 +71,13 @@ unkunpack ukb42156.enc 【数据密码】
 awk '{print $1}' ukb.vip.fields > ukb.vip.fields.id
 sort ukb.vip.fields.id | uniq -d
 ukbconv ukb42156.enc_ukb r -iukb.vip.fields.id -ovip
+
 ```
 
+```
 打开R ，用下面的几行代码，将上面生成的 vip.tab 数据读入，并且给每个变量赋予正确的名字。
 下面的XXXX是文件路径，上述Linux 系统生成的 vip.r文件，如果在Windows 系统里面运行R，需要修改文件的路径。
 
-```
 source("D:/XXXX/vip.r")
 pnames <- read.table("D:/XXXX/ukb.vip.fields", header=F)
 pnames$V1 <- paste0("f.", pnames$V1, ".0.0")
