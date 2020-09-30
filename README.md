@@ -1,7 +1,9 @@
 
 ![Figure 1](./pictures/middle.jpg)
 
-# #1. 下载和处理 HAPMAP3 genotype 数据, 一般作为 LD 计算的 reference panel
+# #1. 下载和处理国际上公用公开的数据 
+
+#1.1 HAPMAP3 genotype 数据, 一般作为 LD 计算的 reference panel
 
 ```
 打开 https://www.broadinstitute.org/medical-and-population-genetics/hapmap-3， 
@@ -13,7 +15,7 @@
 
 ```
 
-# #2. 下载和处理 1000 genomes (千人基因组) genotype 数据， 一般作为 imputation 的 reference panel.
+# 1.2. 1000 genomes (千人基因组) genotype 数据， 一般作为 imputation 的 reference panel.
 
 ```
 打开 https://www.internationalgenome.org/data，在 Available data 下面，点击该页面 Phase 3 对应的 VCF 链接，
@@ -55,7 +57,9 @@ done
 
 
 
-# #3.  提取 UKB 一般表型数据（age, sex, race, bmi, etc.）
+# #2.  提取 UKB 一般表型数据
+
+#2.1 只有一列或者少数计列的一般表型（age, sex, race, bmi, etc.）
 
 WINDOWS电脑建议安装系统自带的Ubuntu Linux系统，cd /mnt/d/。下载UKB小程序ukbunpack, unbconv, encoding.ukb 等。
 苹果电脑，参考 https://github.com/spiros/docker-ukbiobank-utils。
@@ -81,7 +85,7 @@ phe <- subset(bd, select=grep("f.eid|\\.0\\.0", names(bd)))
 ```
 
 
-# #4. 提取 UKB ICD数据（data field 42170）
+#2.2 跨越很多列的 ICD 数据（data field 42170）以及其想对应的日期，父母家族病史的数据
 
 ```
 # ICD 这样的指标，包含了很多不同时间的时间点，量很大，建议分开来处理。
@@ -118,9 +122,7 @@ awk -v cn=$cnt -v co="J440" '{if (NR==1) print "IID", co; else {c=(cn-1)/2; prin
 
 ```
 
-![Figure 3](./pictures/GWAS.jpg)
-
-# #5. 对表型数据进行 GWAS 运行之前的处理
+#2.3. 对表型数据进行 GWAS 运行之前的处理
 
 提取需要研究的表型数据和相关的covariates，比如 age, sex, PCs。一般来说，quantitative的表型数据要 adjust for covariates 和转化成正态分布，这个可以在R里面用下面的命令来实现。
 对于疾病的binary 表型，只需要把需要 adjust 的covarites 和表型数据放在同一个表型数据文件里面，然后在 GWAS里面的命令指明哪个是表型，哪些是 covariates。
@@ -131,7 +133,11 @@ trait_inv = qnorm((rank(trait_res,na.last="keep")-0.5) / length(na.omit(trait_re
 ```
 
 
-# #6. GWAS 运行
+
+![Figure 3](./pictures/GWAS.jpg)
+
+
+# #3. GWAS 运行
 目前GWAS 由专人负责运行，以下链接可以随时下载公开的GWAS数据
 
 ```
@@ -140,33 +146,30 @@ fastgwa.info
 ```
 
 
-# #7. 检查 GWAS 数据的合理性
+# #4. 单个 GWAS 数据的分析
+
+#4.1 画一个 Manhattan Plot. 可以参考 Manhattan.R 和 Manhattan.f.R 代码，前者 call 后者。
+
+#4.2 从GWAS catalog (https://www.ebi.ac.uk/gwas) ) 寻找该 GWAS 的已经发表过的位点， 用 compareP.R 确认该GWAS和已发表的结果大致相同。
+
+#4.3 提取GWAS的 significant 信号，添加简单的注释
+
+使用 PLINK (https://www.cog-genomics.org/plink/1.9/) 左边菜单中的 Report postprocess 中的 3个命令（--annotate, --clump, --gene-report）
+如果 GWAS 数据太大，一般分成单个染色体文件，然后用 for chr in {1..22}; do 这样的命令来分别处理每一个染色体的数据
 
 ```
-一般先画一个 Manhattan Plot. 可以参考我的 Manhattan.R 和 Manhattan.f.R 代码，前者 call 后者。
+plink --annotate height.top NA attrib=/mnt/d/files/snp129.attrib.txt ranges=/mnt/d/files/glist-hg19 --border 10 --pfilter 5e-8 --out height.top.ann
 
-从GWAS catalog (https://www.ebi.ac.uk/gwas) ) 寻找该表型的 GWAS 的已经发表过的信号， 用 compareP.R 跟以前发表的结果（positive contorls）进行比较，确认大致相同。
+plink --bfile /mnt/d/data/hapmap3/g1k.b37 --clump height.gwas --clump-p1 5e-08 --clump-p2 5e-8 --clump-kb 1000 --clump-r2 0 --out height
 
-```
-
-
-# #8. 提取GWAS的 significant 信号，添加简单的注释
+awk '$1 !="" {print $3,$1, $4,$5}' height.clumped > height.top
 
 ```
-plink --annotate MY.gwas.txt NA attrib=snp129.attrib.txt ranges=glist-hg19 --border 10 --pfilter 5e-8 --out MY.gwas.top
-
-如果同一个区域里面的显著性位点太多，可以用 plink --clump 命令，如下。如果不考虑 LD, 只考虑距离，可以任意指定一个 LDfile同时设置  --clump-r2=0。
-
-for chr in {1..22}; do
-  plink --bfile chr$chr --clump Height.2018.txt --clump-p1 1e-08 --clump-p2 1e-8 --clump-kb 1000 --clump-r2 0 --out chr$chr
-done  
 
 对于有统计显著性的重点locus，可以ZOOM 画图 (http://locuszoom.org)
-```
-
 
  
-# #9. 单个GWAS的深度分析 
+#4.4 单个GWAS的数据的深度分析 
 
 ```
 SNP频率和基本注解查询： GnomAD: https://gnomad.broadinstitute.org
@@ -183,9 +186,9 @@ LDpred2 https://privefl.github.io/bigsnpr/articles/LDpred2.html
 
 
 
-# #10. 多个GWAS 之间的分析（哈佛公卫学院梁黎明 三套马车方案）
+# #5. 多个GWAS 之间的分析（哈佛公卫学院梁黎明 三套马车方案）
 
-#10.1. genetic correlation 分析, LDSC (https://github.com/bulik/ldsc)
+#5.1. genetic correlation 分析, LDSC (https://github.com/bulik/ldsc)
 
 ```
 source activate ldsc
@@ -200,7 +203,7 @@ done
 ```
 
 
-#10.2. 因果分析 Mendelian Randomization，GSMR (https://cnsgenomics.com/software/gcta/#GSMR)
+#5.2. 因果分析 Mendelian Randomization，GSMR (https://cnsgenomics.com/software/gcta/#GSMR)
 
 GTCA 里面的 GSMR也需要用到上述提取的 g1k 基因数据作为 计算LD 的参考。
 由于上述的 gak 数据是按照染色体分开的20多个数据，这个时候就需要用 --mbile （而不是 --bfile）来表明需要读取多个（multiple）bfile。
@@ -221,7 +224,7 @@ done
 ```
 
 
-#10.3. TWAS (http://gusevlab.org/projects/fusion/)
+#5.3. TWAS (http://gusevlab.org/projects/fusion/)
 
 ```
 dir_tw=/mnt/d/data/twas_data
@@ -240,13 +243,15 @@ done
 ```
 
 
-# #11. 参考文献和网站
+# # 参考文献和网站
 
 ```
-dbSNP: https://www.ncbi.nlm.nih.gov/snp/
-UCSC genome browser: https://www.genome.ucsc.edu/
+英国 UK biobank: https://ukbiobank.ac.uk
+美国 All of US (奥巴马总统称之为 Precision Medicine Initiative): https://databrowser.researchallofus.org/
 TopMed browser: https://bravo.sph.umich.edu/
 Gnomad browser: https://gnomad.broadinstitute.org/
+UCSC genome browser: https://www.genome.ucsc.edu/
+dbSNP: https://www.ncbi.nlm.nih.gov/snp/
 
 2018. Adult height and risk of 50 diseases: a combined epidemiological and genetic analysis
  
