@@ -51,6 +51,9 @@ cp chr1.bim chr1.bim.COPY
 awk '{if(array[$2]=="Y") {i++; $2=$2".DUP"i}; print $0; array[$2]="Y"}' chr1.bim.COPY > chr1.bim 
 ```
 
+
+
+
 ![Figure 2](./pictures/ukb-logo.jpg)
 ![Figure 3](./pictures/ukb.jpg)
 
@@ -133,8 +136,9 @@ trait_res = residuals(lm(trait ~ age+sex+PC1+PC2, na.action=na.exclude)
 trait_inv = qnorm((rank(trait_res,na.last="keep")-0.5) / length(na.omit(trait_res)))
 ```
 
-
-
+<br>
+<br>
+<br>
 ![Figure 4](./pictures/GWAS.jpg)
 ![Figure 5](./pictures/GWAS2.jpg)
 
