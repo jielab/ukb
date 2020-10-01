@@ -1,6 +1,5 @@
-
-
-# #1. 下载和处理国际上公用公开的数据 
+<br/>
+# $\color{#FF3030}{#1. 下载和处理国际上公用公开的数据}$ 
 
 这是初二生物学课本里面的内容哦！
 
@@ -57,8 +56,8 @@ awk '{if(array[$2]=="Y") {i++; $2=$2".DUP"i}; print $0; array[$2]="Y"}' chr1.bim
 
 
 
-
-# #2.  提取 UKB 一般表型数据
+<br/>
+# $\color{#FF3030}{#2.  提取 UKB 一般表型数据}$ 
 
 ![Figure 2](./pictures/ukb-logo.jpg)
 ![Figure 3](./pictures/ukb.jpg)
