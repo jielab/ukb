@@ -1,7 +1,10 @@
 
-![Figure 1](./pictures/middle.jpg)
 
 # #1. 下载和处理国际上公用公开的数据 
+
+这是初二生物学课本里面的内容哦！
+
+![Figure 1](./pictures/middle.jpg)
 
 #1.1 HAPMAP3 genotype 数据, 一般作为 LD 计算的 reference panel
 
@@ -49,17 +52,16 @@ awk '$3=="EAS" {print $1,$1}' integrated_call_samples_v3.20130502.ALL.panel > g1
 ```
 cp chr1.bim chr1.bim.COPY
 awk '{if(array[$2]=="Y") {i++; $2=$2".DUP"i}; print $0; array[$2]="Y"}' chr1.bim.COPY > chr1.bim 
+
 ```
 
 
 
 
+# #2.  提取 UKB 一般表型数据
+
 ![Figure 2](./pictures/ukb-logo.jpg)
 ![Figure 3](./pictures/ukb.jpg)
-
-
-
-# #2.  提取 UKB 一般表型数据
 
 #2.1 只有一列或者少数计列的一般表型（age, sex, race, bmi, etc.）
 
@@ -134,13 +136,16 @@ awk -v cn=$cnt -v co="J440" '{if (NR==1) print "IID", co; else {c=(cn-1)/2; prin
 ```
 trait_res = residuals(lm(trait ~ age+sex+PC1+PC2, na.action=na.exclude)
 trait_inv = qnorm((rank(trait_res,na.last="keep")-0.5) / length(na.omit(trait_res)))
+
 ```
 
+
+
+# #3. GWAS 运行
 
 ![Figure 4](./pictures/GWAS.jpg)
 ![Figure 5](./pictures/GWAS2.jpg)
 
-# #3. GWAS 运行
 目前GWAS 由专人负责运行，以下链接可以随时下载公开的GWAS数据
 
 ```
