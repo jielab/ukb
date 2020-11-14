@@ -161,9 +161,9 @@ fastgwa.info
 
 # #4. 单个 GWAS 数据的分析
 
-#4.1 画一个 Manhattan Plot. 可以参考 Manhattan.R 和 Manhattan.f.R 代码，前者 call 后者。
+#4.1 画一个 Manhattan Plot, 除了公用的 qqman package 之外，可以用我的 mhplot.R 和 mhplot.f.R 代码，前者 call 后者。
 
-#4.2 从GWAS catalog (https://www.ebi.ac.uk/gwas) ) 寻找该 GWAS 的已经发表过的位点， 用 compareP.R 确认该GWAS和已发表的结果大致相同。
+#4.2 从GWAS catalog (https://www.ebi.ac.uk/gwas) 寻找该GWAS的文章和SNP，用 compareP.R 和 compareP.f.R 确认该GWAS和已发表的结果大致相同。
 
 #4.3 提取GWAS的 significant 信号，添加简单的注释
 
