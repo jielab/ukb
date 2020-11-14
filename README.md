@@ -171,11 +171,16 @@ fastgwa.info
 如果 GWAS 数据太大，一般分成单个染色体文件，然后用 for chr in {1..22}; do 这样的命令来分别处理每一个染色体的数据
 
 ```
-plink --annotate height.top NA attrib=/mnt/d/files/snp129.attrib.txt ranges=/mnt/d/files/glist-hg19 --border 10 --pfilter 5e-8 --out height.top.ann
+trait=MI
 
-plink --bfile /mnt/d/data/hapmap3/g1k.b37 --clump height.gwas --clump-p1 5e-08 --clump-p2 5e-8 --clump-kb 1000 --clump-r2 0 --out height
+gunzip -c $trait.gwas.gz | sed '1 s/ POS/ BP/' > $trait.gwas.txt # 以后就不需要 sed 这一步了
 
-awk '$1 !="" {print $3,$1, $4,$5}' height.clumped > height.top
+plink --annotate $trait.gwas.txt NA ranges=glist-hg19 --border 10 --pfilter 5e-8 --out $trait.top
+
+plink --bfile hapmap3/g1k.b37 --clump $trait.gwas.txt --clump-p1 5e-08 --clump-kb 1000 --clump-r2 0.2 --out $trait
+
+awk '$1 !="" {print $3,$1, $4,$5}' $trait.clumped > $trait.top
+*** plink clump 的结果，不包括那些 --bfile 里面没有的SNP，所以得要把那些SNP再添加到 clump 的结果里。
 
 ```
 
