@@ -1,18 +1,19 @@
 setwd("C:/Users/黄捷/Desktop")
 source("D:/scripts/compareP.f.R")
 
-pdf("compareP.pdf", w=12, h=10)
-par(mfrow=c(2,2), mai=c(1,1,0.5,0.5))
+pdf("compareP.pdf", w=12, h=5)
+par(mfrow=c(1,3), mai=c(1,1,0.5,0.5))
 compareP(
-	name1="posCtrl", 
-	file1="D:/files/posCtrls/height.EUR3290.txt", 
-	cols1=NA, 
-	name2="UKB", 
-	file2="D:/projects/001students/001leg/gwas/height.gwas.gz", 
-	cols2="SNP CHR POS EA NEA A1_CT EAF N BETA SE Z P",
-	plots="BETA EAF logP"
+	f1="cad.txt",
+	f1_name="Known", f1_snp="SNP", f1_ea="EA", f1_nea="NEA", f1_eaf="EAF", f1_beta="BETA", f1_p="P",
+	f2="cvd.gwas.gz",
+	f2_name="UKB", f2_snp="SNP", f2_ea="A1", f2_nea="A2", f2_eaf="A1_FREQ", f2_beta="BETA", f2_p="P"
 	)
 dev.off()
+
+
+
+
 
 
 
