@@ -1,7 +1,7 @@
 setwd("C:/Users/黄捷/Desktop")
 source("D:/scripts/compareP.f.R")
 
-pdf("compareP.pdf", w=12, h=5)
+png("compareP.png", w=1200, h=400)
 par(mfrow=c(1,3), mai=c(1,1,0.5,0.5))
 compareP(
 	f1="cad.txt",
