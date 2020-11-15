@@ -244,11 +244,11 @@ dir=/mnt/d/projects/001cvd
 trait1=artery
 trait2=copd
 for trait in $trait1 $trait2; do
-	echo "SNP A1 A2 freq b se p N" > $trait.gwas.txt
-	zcat $dir/gwas/$trait1.gwas.gz | awk 'NR>1 {print $1, $4, $5, $9, $11,$12, $14, $10}' >> $trait.gwas.txt
+	echo "SNP A1 A2 freq b se p N" > $trait.gcta.txt
+	zcat $dir/gwas/$trait1.gwas.gz | awk 'NR>1 {print $1, $4, $5, $9, $11,$12, $14, $10}' >> $trait.gcta.txt
 done
-echo "$trait1 $trait1.gwas.txt" > test.exposure
-echo "$trait2 $trait2.gwas.txt" > test.outcome
+echo "$trait1 $trait1.gcta.txt" > test.exposure
+echo "$trait2 $trait2.gcta.txt" > test.outcome
 gcta64 --bfile hapmap3/g1k.b37 --gsmr-file test.exposure test.outcome --gsmr-direction 2 --gwas-thresh 1e-5 --effect-plot --out test
 
 ```
