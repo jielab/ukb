@@ -187,7 +187,7 @@ done
 #4.3 提取GWAS里面的的统计显著性（significant）信号，添加简单的注释（比如所在的基因名称）
 
 使用 PLINK (https://www.cog-genomics.org/plink/1.9/) 左边菜单中的 Report postprocess 中的 3个命令（--annotate, --clump, --gene-report）
-如果 GWAS 数据太大，一般分成单个染色体文件，然后用 for chr in {1..22}; do 这样的命令来分别处理每一个染色体的数据
+由于 千人基因组 (g1k) 的基因数据过大（将近1亿个SNP），一般用 for chr in {1..22}; do 这样的命令来分别处理每一个染色体的数据
 
 ```
 trait=MI
