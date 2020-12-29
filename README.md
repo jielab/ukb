@@ -196,7 +196,7 @@ gunzip -c $trait.gwas.gz | sed '1 s/ POS/ BP/' > $trait.gwas.txt # 以后就不�
 
 plink --annotate $trait.gwas.txt NA ranges=glist-hg19 --border 10 --pfilter 5e-8 --out $trait.top
 
-plink --bfile hapmap3/g1k.b37 --clump $trait.gwas.txt --clump-p1 5e-08 --clump-kb 1000 --clump-r2 0.2 --out $trait
+plink --bfile hm3/hm3.b37 --clump $trait.gwas.txt --clump-p1 5e-08 --clump-p2 5e-08 --clump-kb 1000 --clump-r2 0.2 --out $trait
 
 awk '$1 !="" {print $3,$1, $4,$5}' $trait.clumped > $trait.top
 *** plink clump 的结果，不包括那些 --bfile 里面没有的SNP，所以得要把那些SNP再添加到 clump 的结果里。
