@@ -152,11 +152,22 @@ trait_inv = qnorm((rank(trait_res,na.last="keep")-0.5) / length(na.omit(trait_re
 ![Figure 4](./pictures/GWAS.jpg)
 ![Figure 5](./pictures/GWAS2.jpg)
 
-目前GWAS 由专人负责运行，以下链接可以随时下载公开的GWAS数据
+
+目前GWAS 由专人负责运行，一般来说就是通过下面这样的PLINK命令来跑
 
 ```
-Cardiovascular disease genomics http://www.broadcvdi.org/
-fastgwa.info
+for chr in {1..22}; do
+   plink2 --memory 12000 --threads 16 --pfile ukb/imp/chr$chr --extract ukb.chr$chr.good.snps --pheno pheno/cvd.EUR.pheno --no-psam-pheno --pheno-name XXX --1 --glm cols=+ax,+a1freq,+a1freqcc,+a1count,+a1countcc,+beta,+orbeta,+nobs hide-covar no-x-sex --covar pheno/ukb.cov --covar-name age,sex,PC1-PC10 --out chr$chr
+
+```
+上述命令顺利跑完后，确认生成的文件没有问题后，可以把所有的染色体的数据串到一起，形成一个单一的 XXX.gwas.gz 文件。鉴于2千多万个SNP，文件太大，我们一般只保留：P<0.01的SNP 以及那些在Hapmap3 里面的SNP。最终合并成的 XXX.gwas.gz 文件用 TAB 分割，CHR:POS 排好序，要不然 LocusZoom 那样的软件不能处理。也可以用 tabix -f -S 1 -s 1 -b 2 -e 2 XXX.gwas.gz 对数据进行索引，便于 LocalZoom 那样的软件去处理。
+
+
+如果想找公开的GWAS数据进行练手，或对比，可以从以下链接下载公开的GWAS数据
+```
+1. 哈佛医学院附属麻省总医院：http://www.nealelab.is/uk-biobank
+2. 哈佛医学院附属麻省总医院：Cardiovascular disease genomics http://www.broadcvdi.org/
+3. 西湖大学杨剑：fastgwa.info
 ```
 
 
