@@ -59,7 +59,6 @@ awk '{if(array[$2]=="Y") {i++; $2=$2".DUP"i}; print $0; array[$2]="Y"}' chr1.bim
 
 <br/>
 <br/>
-
 # #2.  提取 UKB 一般表型数据
 
 ![Figure 2](./pictures/ukb-logo.jpg)
@@ -145,7 +144,8 @@ trait_inv = qnorm((rank(trait_res,na.last="keep")-0.5) / length(na.omit(trait_re
 
 ```
 
-
+<br/>
+<br/>
 # #3. GWAS 运行
 
 ![GWAS](./pictures/GWAS-new.jpg)
@@ -167,7 +167,8 @@ for chr in {1..22}; do
 3. 西湖大学杨剑：fastgwa.info
 ```
 
-
+<br/>
+<br/>
 # #4. 单个 GWAS 数据的分析
 
 #4.1 画一个 Manhattan Plot, 除了公用的 qqman package 之外，可以用我的 mhplot.R 和 mhplot.f.R 代码，前者 call 后者。
@@ -292,8 +293,8 @@ PRSice: https://github.com/choishingwan/PRSice
 LDpred2 https://privefl.github.io/bigsnpr/articles/LDpred2.html
 ```
 
-
-
+<br/>
+<br/>
 # #5. 多个GWAS 之间的分析（哈佛公卫学院梁黎明 LDSC-GSMR-TWAS “三件套” 方案）
 
 #5.1. genetic correlation 分析, LDSC (https://github.com/bulik/ldsc)
@@ -313,9 +314,11 @@ done
 
 #5.2. 因果分析 Mendelian Randomization，GSMR (https://cnsgenomics.com/software/gcta/#GSMR)
 
-我们建议用 hapmap3 的数据作为 LD reference。
+MR的文章已经发表了千万篇，方法至少十几种，最简单的就是使用 MendelianRandomization 的 R 包，全面理解有关流程和结果可视化。
+
+对于 GSMR 这种需要用到参考基因组计算 LD 的软件，我们建议用 hapmap3 的数据作为 LD reference。
 如果用上述提取的千人基因组数据作为 LD 参考，由于数据是按照染色体分开的，就需要用 --mbfile （而不是 --bfile）。
-!!! GCTA 对文件的格式有比较固定和严格的要求，SNP A1 A2 freq b se p N 必须按照这个顺序！！！
+!!! GCTA 对文件的格式有比较固定和严格的要求，SNP A1 A2 freq b se p N 必须按照这个顺序，请参考 GCTA 官网
 
 ```
 dir=/mnt/d/projects/001cvd
@@ -350,7 +353,8 @@ done
 done
 ```
 
-
+<br/>
+<br/>
 # # 参考文献和网站
 
 ```
