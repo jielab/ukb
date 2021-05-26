@@ -258,7 +258,9 @@ zcat ABC.gwas.gz | awk 'NR==1 || $NF<5e-8 {b=sprintf("%.0f",$3/1e6); print $1,$2
 ```
 <br/>
 
-#4.4 如果不考虑 SNP之间的LD，就是单纯的根据 P值和 CHR：POS 将所有的显著信号划分为1MB的片区，可以用下面的 AWK 命令。
+#4.4 如果不考虑 SNP之间的LD
+
+就是单纯的根据 P值和 CHR：POS 将所有的显著信号划分为1MB的片区，可以用下面的 AWK 命令。
 该命令假设GWAS数据的第1，2，3 列 分别是 CHR, POS, SNP，最后一列是P 值。
 ```
 awk '{b=sprintf("%.0f",$2/1e6); print $3,$1,$2,$NF,b}' TRAIT.p5e-8 | sort -k 2,2n -k 5,5n -k 4,4g | awk '{if (arr[$NF] !="Y") print $0; arr[$NF] ="Y"}' > TRAIT.loci
@@ -278,6 +280,7 @@ GWAS 的数据直接导入 LocusZOOM (http://locuszoom.org), 轻松得到 Manhat
 <br/>
 
 #4.5 生成 PRS
+
 我们可以根据任何一个GWAS，来计算UKB里面每个人的PRS，当然也可以计算任何人包括我们自己的PRS，只要我们有基因数据就行。
 相关的方法学，请参考经典版的PLINK （http://zzz.bwh.harvard.edu/plink/profile.shtml）和新版的PLINK1.9 （https://www.cog-genomics.org/plink/1.9/score）
 由于UKB的基因数据很大，一般是将22条染色体分别运行，命令如下：
