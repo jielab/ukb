@@ -17,6 +17,7 @@
 这个基因数据将作为我们组进行 LDSC 和 GSMR 分析的标准文件。
 
 ```
+<br/>
 
 #1.2. 1000 genomes (千人基因组) genotype 数据， 一般作为 imputation 的 reference panel.
 
@@ -55,9 +56,10 @@ cp chr1.bim chr1.bim.COPY
 awk '{if(array[$2]=="Y") {i++; $2=$2".DUP"i}; print $0; array[$2]="Y"}' chr1.bim.COPY > chr1.bim 
 
 ```
+<br/>
+<br/>
 
-<br/>
-<br/>
+
 # #2.  提取 UKB 一般表型数据
 
 ![Figure 2](./pictures/ukb-logo.jpg)
@@ -65,7 +67,7 @@ awk '{if(array[$2]=="Y") {i++; $2=$2".DUP"i}; print $0; array[$2]="Y"}' chr1.bim
 有人做了一个 ukbtools 的R软件包，但我觉得不是太好用，并且很慢。
 https://kenhanscombe.github.io/ukbtools/articles/explore-ukb-data.html
 如果你们有兴趣，可以参考这个，可以用两种不同的方法来提取数据，进行比较
-
+<br/>
 
 #2.1 只有一列或者少数计列的一般表型（age, sex, race, bmi, etc.）
 
@@ -92,7 +94,7 @@ pnames$V1 <- paste0("f.", pnames$V1, ".0.0")
 phe <- subset(bd, select=grep("f.eid|\\.0\\.0", names(bd)))
 
 ```
-
+<br/>
 
 #2.2 跨越很多列的 ICD 数据（data field 42170）以及其想对应的日期，父母家族病史的数据
 
@@ -131,6 +133,7 @@ awk -v cn=$cnt -v co="J440" '{if (NR==1) print "IID", co; else {c=(cn-1)/2; prin
     for (i=2; i<=(c+1); i++) { if ($i==co) printf " "$(i+c) } printf "\n"  }}' icd-date.tab | awk 'NF==2' > icd-date.2cols
 
 ```
+<br/>
 
 #2.3. 对表型数据进行 GWAS 运行之前的处理
 
@@ -142,9 +145,10 @@ trait_res = residuals(lm(trait ~ age+sex+PC1+PC2, na.action=na.exclude)
 trait_inv = qnorm((rank(trait_res,na.last="keep")-0.5) / length(na.omit(trait_res)))
 
 ```
+<br/>
+<br/>
 
-<br/>
-<br/>
+
 # #3. GWAS 运行
 
 ![GWAS](./pictures/GWAS-new.jpg)
@@ -174,11 +178,12 @@ UKB GWAS 完整的分析结果，网上发布
  A. 哈佛大学的CVD knowlege portal: https://cvd.hugeamp.org/
  B. 南加州大学的神经影像基因组国际合作团队：http://enigma.ini.usc.edu/
 ```
+<br/>
+<br/>
 
-<br/>
-<br/>
+
 # #4. 单个 GWAS 数据的分析
-
+<br/>
 #4.1 画一个 Manhattan Plot, 除了公用的 qqman package 之外，可以用我的 mhplot.R 和 mhplot.f.R 代码，前者 call 后者。
 我的代码可以：多个图画在同一页上，红色显示 rare variants, 添加绿色的已发表的SNP，等。
 为了保证所有的图的横坐标位置对齐，我的代码用到了每个染色体的地标（dibiao），可以用下面的代码生成
@@ -206,7 +211,6 @@ done
 
 使用 PLINK (https://www.cog-genomics.org/plink/1.9/) 左边菜单中的 Report postprocess 中的 3个命令（--annotate, --clump, --gene-report）
 
-
 ```
 trait=MI
 
@@ -227,6 +231,7 @@ done
 zcat ABC.gwas.gz | awk 'NR==1 || $NF<5e-8 {b=sprintf("%.0f",$3/1e6); print $1,$2,$3,$NF,b}' | sort -k 2,2n -k 5,5n -k 4,4g | awk '{if (arr[$NF] !="Y") print $0; arr[$NF] ="Y"}' 
 
 ```
+<br/>
 
 #4.4 如果不考虑 SNP之间的LD，就是单纯的根据 P值和 CHR：POS 将所有的显著信号划分为1MB的片区，可以用下面的 AWK 命令。
 该命令假设GWAS数据的第1，2，3 列 分别是 CHR, POS, SNP，最后一列是P 值。
@@ -244,6 +249,7 @@ bedtools intersect -a A.bed -b B.bed -wo
 ```
 
 GWAS 的数据直接导入 LocusZOOM (http://locuszoom.org), 轻松得到 Manhattan Plot, Top Loci Table, 以及任何基因组区域的 locuszoom 图。有关问题，请参考我跟对方的沟通 https://github.com/statgen/locuszoom-hosted/issues/19
+<br/>
 
 #4.5 生成 PRS
 我们可以根据任何一个GWAS，来计算UKB里面每个人的PRS，当然也可以计算任何人包括我们自己的PRS，只要我们有基因数据就行。
@@ -255,7 +261,8 @@ for chr in {1..22}; do
       plink2 --pfile chr$chr --score chr$chr.ref 1 2 3 header no-mean-imputation cols=+scoresums list-variants --out chr$chr
 done
 ```
- 
+<br/>
+
 #4.6 单个GWAS的数据的深度分析 
 
 ```
@@ -270,10 +277,12 @@ done
 PRSice: https://github.com/choishingwan/PRSice
 LDpred2 https://privefl.github.io/bigsnpr/articles/LDpred2.html
 ```
+<br/>
+<br/>
 
+
+# #5. 多个GWAS 之间的分析（LDSC-GSMR-TWAS “三件套” 方案）
 <br/>
-<br/>
-# #5. 多个GWAS 之间的分析（哈佛公卫学院梁黎明 LDSC-GSMR-TWAS “三件套” 方案）
 
 #5.1. genetic correlation 分析, LDSC (https://github.com/bulik/ldsc)
 
@@ -288,7 +297,7 @@ for train in $traits; do
  #   awk '$1=="Summary" {printf NR}' $trait.log | xargs -n1 -I % awk -v s=% 'FNR >=s' *.log | sed 's/.sumstats.gz//g' > $trait.ldsc.txt
 done
 ```
-
+<br/>
 
 #5.2. 因果分析 Mendelian Randomization，GSMR (https://cnsgenomics.com/software/gcta/#GSMR)
 
@@ -312,7 +321,7 @@ echo "$trait2 $trait2.gcta.txt" > test.outcome
 gcta64 --bfile hapmap3/g1k.b37 --gsmr-file test.exposure test.outcome --gsmr-direction 2 --gwas-thresh 1e-5 --effect-plot --out test
 
 ```
-
+<br/>
 
 #5.3. TWAS (http://gusevlab.org/projects/fusion/)
 
@@ -331,9 +340,10 @@ done
 done
 done
 ```
+<br/>
+<br/>
 
-<br/>
-<br/>
+
 # # 参考文献和网站
 
 ```
