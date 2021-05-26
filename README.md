@@ -60,16 +60,20 @@ awk '{if(array[$2]=="Y") {i++; $2=$2".DUP"i}; print $0; array[$2]="Y"}' chr1.bim
 <br/>
 
 
-# #2.  提取 UKB 一般表型数据
+# #2.  提取 UKB 表型数据
 
 ![Figure 2](./pictures/ukb-logo.jpg)
 
-有人做了一个 ukbtools 的R软件包，https://kenhanscombe.github.io/ukbtools/articles/explore-ukb-data.html。
+#2.1 首先要明确，UKB的基因数据很大，所有申请者都能得到一样的数据，一般下载到服务器上去储存和使用。
+但是，对于基因型的 summary statistics，是可以人人免费下载的。UKB里面的将近一亿个 SNP 的 rsID, CHR, POS, MAF等信息，就可以点击下面这个页面上的Imputation，然后弹出来的页面上会有下面这句话：
+The information scores and minor allele frequency data for the imputed genotypes (computed with QCTOOL) can also be downloaded in Resource 1967。点击链接下载就行了。
+![Figure 2](./pictures/ukb-browse.png)
+对于表型数据的提取，有人做了一个 ukbtools 的R软件包，https://kenhanscombe.github.io/ukbtools/articles/explore-ukb-data.html。
 但我觉得不是太好用，并且很慢。可以参考这个，用两种不同的方法来提取数据，进行比较。
 <br/>
 <br/>
 
-#2.1 只有一列或者少数计列的一般表型（age, sex, race, bmi, etc.）
+#2.2 只有一列或者少数计列的一般表型（age, sex, race, bmi, etc.）
 
 WINDOWS电脑建议安装系统自带的Ubuntu Linux系统，cd /mnt/d/。下载UKB小程序ukbunpack, unbconv, encoding.ukb 等。
 苹果电脑，参考 https://github.com/spiros/docker-ukbiobank-utils。
@@ -96,7 +100,7 @@ phe <- subset(bd, select=grep("f.eid|\\.0\\.0", names(bd)))
 ```
 <br/>
 
-#2.2 跨越很多列的 ICD 数据（data field 42170）以及其想对应的日期，父母家族病史的数据
+#2.3 跨越很多列的 ICD 数据（data field 42170）以及其想对应的日期，父母家族病史的数据
 
 ```
 # ICD 这样的指标，包含了很多不同时间的时间点，量很大，建议分开来处理。
