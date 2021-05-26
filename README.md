@@ -56,7 +56,6 @@ awk '{if(array[$2]=="Y") {i++; $2=$2".DUP"i}; print $0; array[$2]="Y"}' chr1.bim
 
 ```
 
-
 <br/>
 <br/>
 # #2.  提取 UKB 一般表型数据
@@ -161,10 +160,19 @@ for chr in {1..22}; do
 
 
 如果想找公开的GWAS数据进行练手，或对比，可以从以下链接下载公开的GWAS数据
+
 ```
-1. 哈佛医学院附属麻省总医院：http://www.nealelab.is/uk-biobank
-2. 哈佛医学院附属麻省总医院：Cardiovascular disease genomics http://www.broadcvdi.org/
-3. 西湖大学杨剑：fastgwa.info
+最经典的，历史悠久的 GWAS Catalog: https://www.ebi.ac.uk/gwas
+
+UKB GWAS 完整的分析结果，网上发布
+ A. 美国哈佛大学：http://www.nealelab.is/uk-biobank 
+ B. 英国爱丁堡大学：geneatlas: http://geneatlas.roslin.ed.ac.uk
+
+日本生物样本库的 GWAS： http://jenger.riken.jp/en/result
+
+各大专项疾病领域的GWAS，比如：
+ A. 哈佛大学的CVD knowlege portal: https://cvd.hugeamp.org/
+ B. 南加州大学的神经影像基因组国际合作团队：http://enigma.ini.usc.edu/
 ```
 
 <br/>
@@ -247,36 +255,6 @@ for chr in {1..22}; do
       plink2 --pfile chr$chr --score chr$chr.ref 1 2 3 header no-mean-imputation cols=+scoresums list-variants --out chr$chr
 done
 ```
-生成的PRS，可以用来评估 PRS 对疾病（比如 Alzhermer's Disesase）的影响，实例代码如下：
-```
-pacman::p_load(data.table, dplyr, ggplot2, tidyverse, magrittr, survival, survminer)
-
-dat0 <- readRDS("D:/data/ukb/Rdata/ukb.phe.rds")
-dat0 <- subset(dat0, select=grep("IID|array|race|eth|related|age|sex|Ill|bmi|attend|birth|death|smoke|alcohol|PC1$|PC2$|apoe|_ad|_dementia|dep|dis|bb_|bc_", names(dat0))) 
-prs = read.table(gzfile('D:/data/ukb/prs/dementia.prs.gz','r'), header=T, as.is=T) 
-dat <- merge(dat0, prs, by="IID") %>%
-	rename(date_dx = date_dementia) %>%
-	filter( race=="White" & age >=60 & !grepl("e1",apoe) ) %>% 
-	mutate( 
-		dx = ifelse( is.na(date_dx), 0,1),
-		lastday = fifelse(!is.na(date_dx), date_dx, fifelse(!is.na(death_date), death_date, as.Date("2018-02-28"))),
-		followyears = (as.numeric(lastday) - as.numeric(date_attend)) / 365.25
-	) %>%
-	filter( followyears >0 ) %>% 
-	mutate (
-		prs_qt = cut(prs, breaks=quantile(prs, probs=seq(0,1,0.2), na.rm=T), include.lowest=T, labels=paste0("q",1:5)),
-		prs_grp = ifelse(prs_qt=="q1", "low", ifelse(prs_qt=="q5", "high", "middle")),
-		prs_grp = factor(prs_grp, levels=c("low","middle","high"))
-	)
-
-### replicate analysis results ###
-table(dat$dx, useNA="always"); hist(dat$followyears)
-sum(dat$followyears) #1,545,433 person-years reported in paper
-round(prop.table(table(dat$prs_grp, dat$dx), 1) ,3) # 1.23% vs. 0.65% reported in paper
-surv.obj <- Surv(time=dat$followyears, event=dat$dx)
-summary(cox.fit <- coxph(surv.obj ~ age+sex + smoke_status+alcohol_status + prs, data=dat))
-ggforest(cox.fit, data=dat)
-```
  
 #4.6 单个GWAS的数据的深度分析 
 
@@ -314,7 +292,8 @@ done
 
 #5.2. 因果分析 Mendelian Randomization，GSMR (https://cnsgenomics.com/software/gcta/#GSMR)
 
-MR的文章已经发表了千万篇，方法至少十几种，最简单的就是使用 MendelianRandomization 的 R 包，全面理解有关流程和结果可视化。
+MR的文章已经发表了千万篇，方法至少十几种，最简单的就是使用 MendelianRandomization 的R包：https://wellcomeopenresearch.org/articles/5-252/v2
+还有一个特别针对 UKB 处理海量数据的 TwoSampleMR 的R包：https://mrcieu.github.io/TwoSampleMR/index.html
 
 对于 GSMR 这种需要用到参考基因组计算 LD 的软件，我们建议用 hapmap3 的数据作为 LD reference。
 如果用上述提取的千人基因组数据作为 LD 参考，由于数据是按照染色体分开的，就需要用 --mbfile （而不是 --bfile）。
@@ -361,16 +340,14 @@ done
 英国 UK biobank: https://ukbiobank.ac.uk
 美国 All of US (奥巴马总统称之为 Precision Medicine Initiative): https://databrowser.researchallofus.org/
 
-GWAS 结果汇总gwas catalog: https://www.ebi.ac.uk/gwas
-
-UKB GWAS 完整的分析结果，网上发布
- 英国爱丁堡大学：geneatlas: http://geneatlas.roslin.ed.ac.uk
- 美国哈佛大学：http://www.nealelab.is/uk-biobank 
-
+基因注释信息浏览器：
 TopMed browser: https://bravo.sph.umich.edu/
 Gnomad browser: https://gnomad.broadinstitute.org/
 UCSC genome browser: https://www.genome.ucsc.edu/
 dbSNP: https://www.ncbi.nlm.nih.gov/snp/
+
+斯坦福大学的 GlobalBiobankEngine 和 nanopore 数据分析等： https://github.com/rivas-lab
+芬兰赫尔辛基大学GWAS课程：https://www.mv.helsinki.fi/home/mjxpirin/GWAS_course/
 
 ```
 
