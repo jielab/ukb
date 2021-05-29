@@ -322,6 +322,7 @@ LDpred2 https://privefl.github.io/bigsnpr/articles/LDpred2.html
 <br/>
 
 #5.1. genetic correlation 分析, LDSC (https://github.com/bulik/ldsc)
+
 其实，美国著名的 Broad Insitute ，已经用 LDSC 把几百个 traits 的 h2 和他们两两之间的基因相关性都计算出来，公布出来了 http://ldsc.broadinstitute.org 
 
 ```
