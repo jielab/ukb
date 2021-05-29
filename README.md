@@ -338,14 +338,19 @@ done
 ```
 <br/>
 
-#5.2. 因果分析 Mendelian Randomization，GSMR (https://cnsgenomics.com/software/gcta/#GSMR)
+#5.2. 因果分析 Mendelian Randomization
 
-MR的文章已经发表了千万篇，方法至少十几种，最简单的就是使用 MendelianRandomization 的R包：https://wellcomeopenresearch.org/articles/5-252/v2
+MR的文章已经发表了千万篇，方法至少十几种。
+
+最简单的就是使用 MendelianRandomization 的R包：https://wellcomeopenresearch.org/articles/5-252/v2
+
 还有一个特别针对 UKB 处理海量数据的 TwoSampleMR 的R包：https://mrcieu.github.io/TwoSampleMR/index.html
+打开这个链接后，点击上面菜单中的 Guide，然后在 Overview 那一段有下面这句话 Extract the instruments from the *IEU GWAS database* for the outcomes of interest。
 
-对于 GSMR 这种需要用到参考基因组计算 LD 的软件，我们建议用 hapmap3 的数据作为 LD reference。
+我们组现在采用的是 GSMR (https://cnsgenomics.com/software/gcta/#GSMR)。这不是一个R包，而是一个成熟的软件 GCTA中的一部分，因此运行起来会比较快。
+SMR 需要用到参考基因组计算 LD 的软件，我们建议用 hapmap3 的数据作为 LD reference。
 如果用上述提取的千人基因组数据作为 LD 参考，由于数据是按照染色体分开的，就需要用 --mbfile （而不是 --bfile）。
-!!! GCTA 对文件的格式有比较固定和严格的要求，SNP A1 A2 freq b se p N 必须按照这个顺序，请参考 GCTA 官网
+GCTA 对文件的格式有比较固定和严格的要求，SNP A1 A2 freq b se p N 必须按照这个顺序，请参考 GCTA 官网
 
 ```
 dir=/mnt/d/projects/001cvd
