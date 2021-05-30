@@ -205,8 +205,9 @@ for chr in {1..22}; do # 对每一个染色体，分别生成一个 .cmd 的命�
 	awk '{print $3}' $trait.chr$chr.tmp > $trait.chr$chr.snpid
 	fgrep -wf $trait.chr$chr.snpid ukb_imp_mfi/ukb_mfi_chr$chr_v3.txt | awk '{print $1,$2}' | sed 's/:/_/' > $trait.chr$chr.ukb
 	python join_file.py -i \"$trait.chr$chr.tmp,SPACE,2 $trait.chr$chr.ukb,SPACE,0\" -o $trait.chr$chr.merged
-	done
 	" > chr$chr.cmd
+done
+
 ```
 
 <br/>
