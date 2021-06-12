@@ -398,6 +398,8 @@ GWAS 入门介绍
 Mendelian Randomization 入门推荐文章两篇
 2017. Statistical methods to detect pleiotropy in human complex traits (pubmed.ncbi.nlm.nih.gov/29093210/)
 2019. Meta-analysis and Mendelian randomization: A review (pubmed.ncbi.nlm.nih.gov/30861319/)
+2020. TwoSampleMR R包 https://github.com/MRCIEU/TwoSampleMR
+2021. MendelianRandomization R包 （https://wellcomeopenresearch.org/articles/5-252/v2）
 
 ```
 
