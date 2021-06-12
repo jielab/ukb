@@ -395,7 +395,7 @@ GWAS 入门介绍
 2020. NEJM. Genomewide Association Study of Severe Covid-19 with Respiratory Failure (https://www.nejm.org/doi/full/10.1056/NEJMoa2020283)
 芬兰赫尔辛基大学 GWAS 课程：https://www.mv.helsinki.fi/home/mjxpirin/GWAS_course/
 
-Mendelian Randomization 入门推荐文章两篇
+Mendelian Randomization 入门文章两篇，入门R包两个
 2017. Statistical methods to detect pleiotropy in human complex traits (pubmed.ncbi.nlm.nih.gov/29093210/)
 2019. Meta-analysis and Mendelian randomization: A review (pubmed.ncbi.nlm.nih.gov/30861319/)
 2020. TwoSampleMR R包 https://github.com/MRCIEU/TwoSampleMR
