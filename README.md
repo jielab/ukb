@@ -403,3 +403,4 @@ Mendelian Randomization 入门文章两篇，入门R包两个
 
 ```
 
+![Figure portal](./pictures/portal.png)
