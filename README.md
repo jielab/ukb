@@ -368,7 +368,7 @@ mr_plot(mr_input(XGb, XGse, YGb, YGse))
 ```
 虽然 MendelianRandomization 的R包需要的数据很简单，就4列，分别是 X 和 Y 的 BETA 和 SE，但是 X 的BETA必须是正数，不要出现下面的情况。
 
-![Figure betaw-rong](./pictures/beta-wrong.png)
+![Figure beta-Wrong](./pictures/beta.wrong.png)
 <br/>
 
 #5.3. TWAS (http://gusevlab.org/projects/fusion/)
