@@ -333,12 +333,12 @@ done
 #5.2. 因果分析 Mendelian Randomization
 
 MR的文章已经发表了无数篇，方法至少十几种。
-
-
-我们组现在采用的是 GSMR (https://cnsgenomics.com/software/gcta/#GSMR)。这不是一个R包，而是一个成熟的软件 GCTA中的一部分，因此运行起来会比较快。
+对于原始的GWAS数据，我们可以采用 GSMR进行流程化处理 https://cnsgenomics.com/software/gcta/#GSMR
+请认真阅读杨剑2018年的GSMR 文章 https://www.nature.com/articles/s41467-017-02317-2
+这不是一个R包，而是一个成熟的软件 GCTA中的一部分，因此运行起来会比较快。
 GSMR 需要用到参考基因组计算 LD 的软件，我们建议用 hapmap3 的数据作为 LD reference。
 如果用上述提取的千人基因组数据作为 LD 参考，由于数据是按照染色体分开的，就需要用 --mbfile （而不是 --bfile）。
-GCTA 对文件的格式有比较固定和严格的要求，SNP A1 A2 freq b se p N 必须按照这个顺序，请参考 GCTA 官网
+GCTA 对文件的格式有比较固定和严格的要求，SNP A1 A2 freq b se p N 必须按照这个顺序，请参考 GCTA 官网。
 
 ```
 dir=/mnt/d/projects/001cvd
@@ -354,9 +354,9 @@ gcta64 --bfile hapmap3/g1k.b37 --gsmr-file test.exposure test.outcome --gsmr-dir
 
 ```
 
-其实，最简单的是使用 MendelianRandomization 的R包：https://wellcomeopenresearch.org/articles/5-252/v2
+如果有简单的数据，别人文章里面已经报道了的 exposure 和 outcome 的 BETA 和 SE，最简单的是使用 MendelianRandomization 的R包：https://wellcomeopenresearch.org/articles/5-252/v2
 还有一个特别针对 UKB 处理海量数据的 TwoSampleMR 的R包：https://mrcieu.github.io/TwoSampleMR/index.html
-打开这个链接后，点击上面菜单中的 Guide，然后在 Overview 那一段有下面这句话 Extract the instruments from the *IEU GWAS database* for the outcomes of interest。
+<br/>
 GSMR 分析得到的文件，可以通过下面的R代码，导入到MendelianRandomization 的R包，这样就不用自己去生产 X 和Y 的数据。
 
 ```
@@ -366,7 +366,7 @@ eff = gsmr_snp_effect(gsmr.data, "t2d", "cad"); str(eff)
 XGb = eff$bzx; XGse = eff$bzx_se; YGb = eff$bzy; YGse = eff$bzy_se
 mr_plot(mr_input(XGb, XGse, YGb, YGse))
 ```
-虽然 MendelianRandomization 的R包需要的数据很简单，就4列，分别是 X 和 Y 的 BETA 和 SE，但是 X 的BETA必须是正数，不要出现下面的情况。
+虽然 MendelianRandomization 的R包需要的数据很简单，就4列，分别是 X 和 Y 的 BETA 和 SE，但是 X 的BETA最好是正数，免得出来这样看起来很强的“假阳性”，也会有“假阴性”。
 
 ![Figure beta-Wrong](./pictures/beta.wrong.png)
 <br/>
@@ -396,19 +396,18 @@ done
 # # 参考文献和网站
 
 ```
-英国 UK biobank: https://ukbiobank.ac.uk
-美国 All of US (奥巴马总统称之为 Precision Medicine Initiative): https://databrowser.researchallofus.org/
-斯坦福大学的 GlobalBiobankEngine 和 nanopore 数据分析等： https://github.com/rivas-lab
-
 基因注释信息浏览器：
-TopMed browser: https://bravo.sph.umich.edu/
-Gnomad browser: https://gnomad.broadinstitute.org/
-UCSC genome browser: https://www.genome.ucsc.edu/
-dbSNP: https://www.ncbi.nlm.nih.gov/snp/
+历史悠久的国家队 dbSNP: https://www.ncbi.nlm.nih.gov/snp/
+历史悠久的加州大学学院派 UCSC genome browser: https://www.genome.ucsc.edu/
+奥巴马时期国家队 https://databrowser.researchallofus.org/  TopMed browser: https://bravo.sph.umich.edu/
+哈佛麻省理工主导 Gnomad browser: https://gnomad.broadinstitute.org/
+斯坦福大学的 GlobalBiobankEngine 和 nanopore 数据分析等：https://github.com/rivas-lab
+
 
 GWAS 入门介绍
 2008. JAMA. How to interpret a genome-wide association study (pubmed.ncbi.nlm.nih.gov/18349094/)
 2020. NEJM. Genomewide Association Study of Severe Covid-19 with Respiratory Failure (https://www.nejm.org/doi/full/10.1056/NEJMoa2020283)
+2020. MolPsy. Genomic analysis of diet composition finds novel loci and associations with health and lifestyle (https://www.nature.com/articles/s41380-020-0697-5)
 芬兰赫尔辛基大学 GWAS 课程：https://www.mv.helsinki.fi/home/mjxpirin/GWAS_course/
 
 Mendelian Randomization 入门介绍
@@ -417,6 +416,6 @@ Mendelian Randomization 入门介绍
 
 ```
 
-学会使用公开的 GWAS 数据，在前人的基础上继续向前走！
+学会使用公开的 GWAS 数据，借力、空手道、站在巨人的肩膀上！
 
 ![Figure portal](./pictures/portal.png)
