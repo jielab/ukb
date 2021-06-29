@@ -187,12 +187,19 @@ for chr in {1..22} X; do
 done
 ```
 
-#4.2 从GWAS catalog (https://www.ebi.ac.uk/gwas) 寻找该GWAS的文章和SNP，用 compareP.R 和 compareP.f.R 确认该GWAS和已发表的结果大致相同。
+#4.2 从GWAS catalog (https://www.ebi.ac.uk/gwas) 寻找该GWAS的文章和SNP，
 
-下面的这个图，显示某篇已经发表的CAD的GWAS报道的SNP，跟UKB的结果比较。由于那个文件里面没有P值，所以只画出了 EAF 和 BETA这两个比较图。
-![Figure beta](./pictures/beta.jpg)
+
 下面示意图，来自 2018年的一篇文章（PMID: 30297969）
 ![Figure Z](./pictures/T2D.Z.png)
+
+但是 X 的BETA最好是正数，免得出来这样看起来很强的“假阳性”，也会有“假阴性”。
+![Figure beta-Wrong](./pictures/beta.wrong.png)
+
+请参照我的代码 compareB.R 和 compareB.f.R， 快速画出下面这样的图。
+![Figure beta](./pictures/beta.jpg)
+
+<br/>
 
 
 #4.3 提取GWAS里面的的统计显著性（significant）信号，添加简单的注释（比如所在的基因名称）
@@ -307,9 +314,6 @@ eff = gsmr_snp_effect(gsmr.data, "t2d", "cad"); str(eff)
 XGb = eff$bzx; XGse = eff$bzx_se; YGb = eff$bzy; YGse = eff$bzy_se
 mr_plot(mr_input(XGb, XGse, YGb, YGse))
 ```
-虽然 MendelianRandomization 的R包需要的数据很简单，就4列，分别是 X 和 Y 的 BETA 和 SE，但是 X 的BETA最好是正数，免得出来这样看起来很强的“假阳性”，也会有“假阴性”。
-
-![Figure beta-Wrong](./pictures/beta.wrong.png)
 <br/>
 
 #5.3. TWAS (http://gusevlab.org/projects/fusion/)
