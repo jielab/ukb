@@ -1,4 +1,4 @@
-compareP <-function(
+compareB <-function(
 	f1, f1_name, f1_snp, f1_ea, f1_nea, f1_eaf, f1_beta, f1_se, f1_p,
 	f2, f2_name, f2_snp, f2_ea, f2_nea, f2_eaf, f2_beta, f2_se, f2_p
 	){
