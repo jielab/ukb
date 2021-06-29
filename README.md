@@ -96,7 +96,7 @@ phe <- subset(bd, select=grep("f.eid|\\.0\\.0", names(bd)))
 ```
 <br/>
 
-#2.3 跨越很多列的 ICD 数据（data field 42170）以及其想对应的日期，父母家族病史的数据
+#2.3 跨越很多列的数据，比如 ICD (data field 42170）
 
 ```
 # ICD 这样的指标，包含了很多不同时间的时间点，量很大，建议分开来处理。
@@ -106,31 +106,6 @@ sed -i 's/"//g icd.tab
 # 将 icd.tab 文件整合为两列，便于读入R。
 cat icd.tab | sed -e 's/\tNA//g' -e 's/\t/,/2g' | \
 awk '{ if(NR==1) print "IID icd"; else if (NF==1) print $1 " NA"; else print $0"," }' > icd.2cols
-
-# 从 ICD.2cols 文件里面提取某一个变量，比如 bipolar（对应的ICD-10代码F31），用R读入数据后，生成一个 0/1/NA 变量。
-phe$icd_bipolar = ifelse("F31", phe$icd10), 1, ifelse(“F”, phe$icd10), NA, 0))
-
-# 如果需要批量处理很多ICD变量，先写一个 VIP.icd.txt 文件，第一列是ICD代码，第二列是相对应的变量的名字，比如I350|I35  stenosis，“|”表示“或者”。
-# 这个文件第一行写上 codes names，然后用下面的R代码批量执行。
-ICDnames <- read.table("ukb.vip.icd10", header=T)
-for (i in 1:nrow(ICDnames)) { 
-  phe[[paste0("icd_",ICDnames$names[i])]] = ifelse( grepl(ICDnames$codes[i], phe$icd10), 1, ifelse(grepl( substring(ICDnames$codes[i],1,1), phe$icd10), NA,0)) 
-}
-
-```
-
-```
-## 对于绝大多数的 ICD code, UKB 里面有 First occurances 的数据，比如 http://biobank.ndph.ox.ac.uk/showcase/field.cgi?id=131492。
-## 如果想自己通过写代码来做，可以先提取ICD （data field 42170）以及相对应的日期（data field 42180）, 然后提取单个ICD 的Date, 比如COPD (代码J440，不是J44)。
-## 对 Dementia 这种有多个个ICD 代码的 (F00|F01|F02|F03|G30)，可以分别生成 icdDate.F00.2cols, icdDate.F01.2cols，等。然后在R里面合并文件并找出每人的最小日期。
-
-echo -e "41270\n41280" > icd-date.fields.ids
-ukbconv ukb42156.enc_ukb r -iicd-date.fields.ids -oicd-date
-sed -i 's/"//g' icd-date.tab
-
-cnt=`head -1 icd-date.tab | awk '{printf NF}'` # 找出文件的列数
-awk -v cn=$cnt -v co="J440" '{if (NR==1) print "IID", co; else {c=(cn-1)/2; printf $1;  
-    for (i=2; i<=(c+1); i++) { if ($i==co) printf " "$(i+c) } printf "\n"  }}' icd-date.tab | awk 'NF==2' > icd-date.2cols
 
 ```
 <br/>
@@ -227,6 +202,7 @@ done
 ```
 
 #4.2 从GWAS catalog (https://www.ebi.ac.uk/gwas) 寻找该GWAS的文章和SNP，用 compareP.R 和 compareP.f.R 确认该GWAS和已发表的结果大致相同。
+
 下面的这个图，显示某篇已经发表的CAD的GWAS报道的SNP，跟UKB的结果比较。由于那个文件里面没有P值，所以只画出了 EAF 和 BETA这两个比较图。
 ![Figure beta](./pictures/beta.jpg)
 下面示意图，来自 2018年的一篇文章（PMID: 30297969）
@@ -246,7 +222,7 @@ plink --annotate $trait.gwas.txt NA ranges=glist-hg19 --border 10 --pfilter 5e-8
 
 ## 由于 千人基因组 (g1k) 的基因数据过大（将近1亿个SNP），一般讲每一个染色体的GWAS数据分开来 clump
 ## plink clump 的结果，不包括那些 --bfile 里面没有的SNP，所以得要把那些SNP再添加到 clump 的结果里。
-## 可惜 PLINK的作者 Chris Chang不想解决这个问题，请见 https://groups.google.com/g/plink2-users/c/DacWWAPvGE0/m/uH8NVYq_CQAJ
+## 可惜 PLINK的作者不想让 PLINK 来直接处理这个问题，
 for chr in {1..22}; do
    plink1.9 --vcf g1k.chr$chr.vcf.gz --clump $trait.gwas.txt --clump-p1 5e-08 --clump-p2 5e-08 --clump-kb 1000 --clump-r2 0.2 --out $trait.chr$chr
    awk '$1 !="" {print $3,$1, $4,$5}' $trait.chr$chr.clumped > $trait.chr$chr.top
@@ -295,14 +271,11 @@ done
 #4.6 单个GWAS的数据的深度分析 
 
 ```
-基因国际上大量样本的 SNP频率 和基本注解查询： GnomAD: https://gnomad.broadinstitute.org
-
 生物学功能查询 VEP: http://grch37.ensembl.org/info/docs/tools/vep/index.html
 
 一站式解决方案 post-GWAS analysis pipeline github.com/Ensembl/postgap
 
 多基因风险评分PRS
-
 PRSice: https://github.com/choishingwan/PRSice
 LDpred2 https://privefl.github.io/bigsnpr/articles/LDpred2.html
 ```
@@ -313,21 +286,22 @@ LDpred2 https://privefl.github.io/bigsnpr/articles/LDpred2.html
 # #5. 多个GWAS 之间的分析（genetic correlation -> Mendelian Randomization -> TWAS 三件套）
 <br/>
 
+请参照 scripts 文件夹里面的 001.gc-mr-twas.sh 代码。三件套，基本就是3行代码的事。其它的代码都是胶水（glue）和信号灯（when and who）。
+还有就是，前面做数据的格式化，后面做分析结果汇总和画图，那样的代码。
+
+```
+#1 LDSC：ldsc.py --rg % --out $trait.rg --ref-ld-chr $ldsc_dir/eur_w_ld_chr/ --w-ld-chr $ldsc_dir/eur_w_ld_chr/
+
+#2 GSMR：gcta64 --bfile hapmap3/g1k.b37 --gsmr-file test.exposure test.outcome --gsmr-direction 2 --gwas-thresh 1e-5 --effect-plot --out test
+
+#3 TWAS： Rscript $fusion/FUSION.assoc_test.R --sumstats $trait.sumstats.gz --chr $chr --out $trait.$tissue.chr$chr.txt --weights $dir_gt/$tissue.P01.pos --weights_dir $dir_gt --ref_ld_chr $dir_ld/1000G.EUR.
+
+```
+
 #5.1. genetic correlation 分析, LDSC (https://github.com/bulik/ldsc)
 
 其实，美国的 Broad Insitute ，已经用 LDSC 把几百个 traits 的 h2 和他们两两之间的基因相关性都计算出来，公布出来了 http://ldsc.broadinstitute.org 
-
-```
-source activate ldsc
-for trait in $traits; do
-	zcat $dir/gwas/$trait.sumstats.gz | awk 'NF==5' | sed -e 's/\.000$//' -e 's/\t/ /g' | gzip -f > $trait.sumstats.gz 
-done
-for train in $traits; do
-    echo $trait $traits | sed -e 's/ /.sumstats.gz,/g' -e 's/$/.sumstats.gz/' | \
-    	xargs -n1 -I % /mnt/d/software_lin/ldsc/ldsc.py --rg % --out $trait --ref-ld-chr $ld_dir --w-ld-chr $ld_dir
- #   awk '$1=="Summary" {printf NR}' $trait.log | xargs -n1 -I % awk -v s=% 'FNR >=s' *.log | sed 's/.sumstats.gz//g' > $trait.ldsc.txt
-done
-```
+请
 <br/>
 
 #5.2. 因果分析 Mendelian Randomization
@@ -339,20 +313,6 @@ MR的文章已经发表了无数篇，方法至少十几种。
 GSMR 需要用到参考基因组计算 LD 的软件，我们建议用 hapmap3 的数据作为 LD reference。
 如果用上述提取的千人基因组数据作为 LD 参考，由于数据是按照染色体分开的，就需要用 --mbfile （而不是 --bfile）。
 GCTA 对文件的格式有比较固定和严格的要求，SNP A1 A2 freq b se p N 必须按照这个顺序，请参考 GCTA 官网。
-
-```
-dir=/mnt/d/projects/001cvd
-trait1=artery
-trait2=copd
-for trait in $trait1 $trait2; do
-	echo "SNP A1 A2 freq b se p N" > $trait.gcta.txt
-	zcat $dir/gwas/$trait1.gwas.gz | awk 'NR>1 {print $1, $4, $5, $9, $11,$12, $14, $10}' >> $trait.gcta.txt
-done
-echo "$trait1 $trait1.gcta.txt" > test.exposure
-echo "$trait2 $trait2.gcta.txt" > test.outcome
-gcta64 --bfile hapmap3/g1k.b37 --gsmr-file test.exposure test.outcome --gsmr-direction 2 --gwas-thresh 1e-5 --effect-plot --out test
-
-```
 
 如果有简单的数据，别人文章里面已经报道了的 exposure 和 outcome 的 BETA 和 SE，最简单的是使用 MendelianRandomization 的R包：https://wellcomeopenresearch.org/articles/5-252/v2
 还有一个特别针对 UKB 处理海量数据的 TwoSampleMR 的R包：https://mrcieu.github.io/TwoSampleMR/index.html
@@ -374,21 +334,6 @@ mr_plot(mr_input(XGb, XGse, YGb, YGse))
 
 #5.3. TWAS (http://gusevlab.org/projects/fusion/)
 
-```
-dir_tw=/mnt/d/data/twas_data
-dir_gt=$dir_tw/GTEx_v7_multi_tissue
-dir_ld=$dir_tw/LDREF
-fusion=/mnt/d/software_lin/fusion_twas
-for trait in RHR T2D; do
-for tissue in `ls -d1 $dir_gt/*/ | sed 's/\/$//' | awk -F '/' '{print $NF}' | awk '{printf " "$1}'`; do
-for chr in 7; do
-    echo now process trait $trait, tissue $tissue, chr $chr
-    Rscript $fusion/FUSION.assoc_test.R --sumstats $dir/summary/$trait.sumstats.gz --chr $chr --out $trait.$tissue.chr$chr.txt \ 
-    	--weights $dir_gt/$tissue.P01.pos --weights_dir $dir_gt --ref_ld_chr $dir_ld/1000G.EUR.
-done
-done
-done
-```
 <br/>
 <br/>
 
