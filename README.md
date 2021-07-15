@@ -20,20 +20,18 @@
 ## #1.2. 1000 genomes (千人基因组) genotype 数据， 一般作为 imputation 的 reference panel.
 
 > 打开 https://www.internationalgenome.org/data，在 Available data 下面，点击该页面 Phase 3 对应的 VCF 链接，
->
 > 可以看到以 “ALL.” 开头的文件，可以一个一个直接点击链接下载。
 > 也可以用下面的命令下载, 并且随之将下载的VCF文件转换为PLINK格式
-
-除了下载上述页面上以 “ALL.” 开头的 VCF 文件，倒数第二个 integrated_call_samples_v3.20130502.ALL.panel 文件罗列了每一个样本的人群（pop）和人种 (super_pop)，以及性别。
-根据这个文件，可以提取特定人种的样本，比如：
-awk '$3=="EUR" {print $1,$1}' integrated_call_samples_v3.20130502.ALL.panel > g1k.EUR.keep
-awk '$3=="EAS" {print $1,$1}' integrated_call_samples_v3.20130502.ALL.panel > g1k.EAS.keep
-
-然后可以用 PLINK --keep g1k.EUR.keep 生成某一个特定人种的基因数据。当然，如果不想生成太大的基因数据，就只保留一个所有人的数据，后续的PLINK命令记得用 --keep g1k.EUR.keep 就行。
-
-不论是有所有2504个人基因数据的PLINK文件，还是只有某一个人种的PLINK文件，每个染色体都是单独的文件。
-后续跑 GWAS 或提取 PRS 的时候，也是每条染色体的数据分开来跑，这样就可以进行并行计算（parallel computing）。
-一般不建议把所有的染色体的数据合并成一个完整的单一的基因数据，毕竟将近一个亿的SNP，文件太大了，很多软件根本运行不了。
+> 除了下载上述页面上以 “ALL.” 开头的 VCF 文件，倒数第二个 integrated_call_samples_v3.20130502.ALL.panel 文件罗列了每一个样本的人群（pop）和人种 (super_pop)，以及性别。
+> 根据这个文件，可以提取特定人种的样本，比如：
+> > awk '$3=="EUR" {print $1,$1}' integrated_call_samples_v3.20130502.ALL.panel > g1k.EUR.keep
+> > awk '$3=="EAS" {print $1,$1}' integrated_call_samples_v3.20130502.ALL.panel > g1k.EAS.keep
+>
+> 然后可以用 PLINK --keep g1k.EUR.keep 生成某一个特定人种的基因数据。
+> 当然，如果不想生成太大的基因数据，就只保留一个所有人的数据，后续的PLINK命令记得用 --keep g1k.EUR.keep 就行。
+> 不论是有所有2504个人基因数据的PLINK文件，还是只有某一个人种的PLINK文件，每个染色体都是单独的文件。
+> 后续跑 GWAS 或提取 PRS 的时候，也是每条染色体的数据分开来跑，这样就可以进行并行计算（parallel computing）。
+> 一般不建议把所有的染色体的数据合并成一个完整的单一的基因数据，毕竟将近一个亿的SNP，文件太大了，很多软件根本运行不了。
 
 ```
 
