@@ -10,12 +10,11 @@
 ## #1.1 HAPMAP3 genotype 数据, 一般作为 LD 计算的 reference panel
 
 ### 打开 https://www.broadinstitute.org/medical-and-population-genetics/hapmap-3， 
-点击 How To Download This Release 下面的 A. SNP Genotype Data 段落的中间3个链接。
-文件名字里面有 "b36"，现在一般都用 b37（比如 UK Biobank），甚至有的用 b38，
-所以下载后解压后需要将那个 .map 文件先用 liftOver 转化为 b37 格式，然后用 PLINK 生成 bed/bim/fam 文件。
-这一步已经完成，生成的 PLINK 格式文件已经放到百度网盘，请大家下载。
-这个基因数据将作为我们组进行 LDSC 和 GSMR 分析的标准文件。
-
+点击 How To Download This Release 下面的 A. SNP Genotype Data 段落的中间3个链接。  
+文件名字里面有 "b36"，现在一般都用 b37（比如 UK Biobank），甚至有的用 b38，  
+所以下载后解压后需要将那个 .map 文件先用 liftOver 转化为 b37 格式，然后用 PLINK 生成 bed/bim/fam 文件。  
+这一步已经完成，生成的 PLINK 格式文件已经放到百度网盘，请大家下载。  
+这个基因数据将作为我们组进行 LDSC 和 GSMR 分析的标准文件。  
 <br/>
 
 ## #1.2. 1000 genomes (千人基因组) genotype 数据， 一般作为 imputation 的 reference panel.
