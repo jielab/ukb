@@ -118,28 +118,28 @@ WINDOWS电脑建议安装系统自带的 Ubuntu Linux系统，然后用 cd /mnt/
 > > for chr in {1..22}; do
 > > - plink2 --memory 12000 --threads 16 --pfile chr$chr --extract ukb.chr$chr.good.snps --pheno cvd.EUR.pheno --no-psam-pheno --pheno-name XXX --1 --glm cols=+ax,+a1freq,+a1freqcc,+a1count,+a1countcc,+beta,+orbeta,+nobs hide-covar no-x-sex --covar pheno/ukb.cov --covar-name age,sex,PC1-PC10 --out chr$chr   
 > > done
+
 > 上述命令顺利跑完后，确认生成的文件没有问题后，可以把所有的染色体的数据串到一起，形成一个单一的 XXX.gwas.gz 文件。鉴于2千多万个SNP，文件太大，我们一般只保留：P<0.01的SNP 以及那些在Hapmap3 里面的SNP。最终合并成的 XXX.gwas.gz 文件用 TAB 分割，CHR:POS 排好序，要不然 LocusZoom 那样的软件不能处理。也可以用 tabix -f -S 1 -s 1 -b 2 -e 2 XXX.gwas.gz 对数据进行索引，便于 LocalZoom 那样的软件去处理。
 <br/>
 
 ## #3.2 公开的GWAS数据进行练手，或对比
 
-> 如果下载下来的数据是VCF 格式，可以用 bcftools query 提取需要的 data fileds，生成 TXT 格式。
-> bcftools query 的使用，请参考 http://samtools.github.io/bcftools/bcftools.html
- 
-```
-最经典的，历史悠久的 GWAS Catalog: https://www.ebi.ac.uk/gwas
+> 最经典的，历史悠久的 GWAS Catalog: https://www.ebi.ac.uk/gwas
 
-UKB GWAS 完整的分析结果，网上发布
- A. 美国哈佛大学：http://www.nealelab.is/uk-biobank 
- B. 英国爱丁堡大学：geneatlas: http://geneatlas.roslin.ed.ac.uk
+> UKB GWAS 完整的分析结果，网上发布
+> > - 美国哈佛大学：http://www.nealelab.is/uk-biobank 
+> > - 英国爱丁堡大学：geneatlas: http://geneatlas.roslin.ed.ac.uk
 
-日本生物样本库的 GWAS：http://jenger.riken.jp/en/result 
-** 对于这上面的每一个表型，点击最后一列，查看曼哈顿图和QQ图，然后点击那个页面上的 Download summary statistics。否则，前面一页的 download 下来的数据没有 rsID.
+> 日本生物样本库的 GWAS：http://jenger.riken.jp/en/result 
+> > ** 对于这上面的每一个表型，点击最后一列，查看曼哈顿图和QQ图，然后点击那个页面上的 Download summary statistics。否则，前面一页的 download 下来的数据没有 rsID.
 
-各大专项疾病领域的GWAS，比如：
- A. 哈佛大学的CVD knowlege portal: https://hugeamp.org/
- B. 南加州大学的神经影像基因组国际合作团队：http://enigma.ini.usc.edu/
-```
+> 各大专项疾病领域的GWAS，比如：
+> > - 哈佛大学的CVD knowlege portal: https://hugeamp.org/
+> > - 南加州大学的神经影像基因组国际合作团队：http://enigma.ini.usc.edu/
+
+> * 如果下载下来的数据是VCF 格式，可以用 bcftools query 提取需要的 data fileds，生成 TXT 格式。*
+> * bcftools query 的使用，请参考 http://samtools.github.io/bcftools/bcftools.html *
+
 <br/>
 
 ## #3.3 网上下载下来的GWAS数据的格式化
