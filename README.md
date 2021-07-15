@@ -131,7 +131,7 @@ WINDOWS电脑建议安装系统自带的 Ubuntu Linux系统，然后用 cd /mnt/
 > > - 英国爱丁堡大学：geneatlas: http://geneatlas.roslin.ed.ac.uk
 
 > 日本生物样本库的 GWAS：http://jenger.riken.jp/en/result 
-> > ***对于这上面的每一个表型，点击最后一列，查看曼哈顿图和QQ图，然后点击那个页面上的 Download summary statistics。否则，前面一页的 download 下来的数据没有 rsID ***
+> > ***对于这上面的每一个表型，点击最后一列，查看曼哈顿图和QQ图，然后点击那个页面上的 Download summary statistics。否则，前面一页的 download 下来的数据没有 rsID***
 
 > 各大专项疾病领域的GWAS，比如：
 > > - 哈佛大学的CVD knowlege portal: https://hugeamp.org/
