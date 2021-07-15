@@ -3,22 +3,22 @@
 
 # #1. 下载和处理国际上公用公开的数据
 
-这是初二生物学课本里面的内容哦！
+## 这是初二生物学课本里面的内容哦！
 
 ![middle school](./pictures/middle.jpg)
 
-#1.1 HAPMAP3 genotype 数据, 一般作为 LD 计算的 reference panel
-```
-打开 https://www.broadinstitute.org/medical-and-population-genetics/hapmap-3， 
+## #1.1 HAPMAP3 genotype 数据, 一般作为 LD 计算的 reference panel
+
+### 打开 https://www.broadinstitute.org/medical-and-population-genetics/hapmap-3， 
 点击 How To Download This Release 下面的 A. SNP Genotype Data 段落的中间3个链接。
 文件名字里面有 "b36"，现在一般都用 b37（比如 UK Biobank），甚至有的用 b38，
 所以下载后解压后需要将那个 .map 文件先用 liftOver 转化为 b37 格式，然后用 PLINK 生成 bed/bim/fam 文件。
 这一步已经完成，生成的 PLINK 格式文件已经放到百度网盘，请大家下载。
 这个基因数据将作为我们组进行 LDSC 和 GSMR 分析的标准文件。
-```
+
 <br/>
 
-#1.2. 1000 genomes (千人基因组) genotype 数据， 一般作为 imputation 的 reference panel.
+## #1.2. 1000 genomes (千人基因组) genotype 数据， 一般作为 imputation 的 reference panel.
 
 ```
 打开 https://www.internationalgenome.org/data，在 Available data 下面，点击该页面 Phase 3 对应的 VCF 链接，
@@ -52,7 +52,7 @@ awk '{if(array[$2]=="Y") {i++; $2=$2".DUP"i}; print $0; array[$2]="Y"}' chr1.bim
 
 ![UKB](./pictures/ukb.png)
 
-#2.1 首先要明确，UKB的基因数据很大，所有申请者都能得到一样的数据（样本的ID不一样），一般下载到服务器上去储存和使用。
+## #2.1 首先要明确，UKB的基因数据很大，所有申请者都能得到一样的数据（样本的ID不一样），一般下载到服务器上去储存和使用。
 但是，对于基因型的 summary statistics，是可以人人免费下载的。UKB里面的将近一亿个 SNP 的 rsID, CHR, POS, MAF等信息，就可以点击上面这个页面上的 Imputation，然后弹出来的页面上会有下面这句话：
 The information scores and minor allele frequency data for the imputed genotypes (computed with QCTOOL) can also be downloaded in Resource 1967。点击链接下载就行了。
 
@@ -61,7 +61,7 @@ The information scores and minor allele frequency data for the imputed genotypes
 <br/>
 <br/>
 
-#2.2 只有一列或者少数计列的一般表型（age, sex, race, bmi, etc.）
+## #2.2 只有一列或者少数计列的一般表型（age, sex, race, bmi, etc.）
 
 WINDOWS电脑建议安装系统自带的 Ubuntu Linux系统，然后用 cd /mnt/d/ （而不是 D:/）进入 D 盘。
 打开ukbiobank.ac.uk, 点击 Data Showcase 菜单。然后点击第一个“Essential Information”，阅读 Access and using your data。
@@ -92,7 +92,7 @@ phe <- subset(bd, select=grep("f.eid|\\.0\\.0", names(bd)))
 ```
 <br/>
 
-#2.3 跨越很多列的数据，比如 ICD (data field 42170）
+## #2.3 跨越很多列的数据，比如 ICD (data field 42170）
 
 ```
 # ICD 这样的指标，包含了很多不同时间的时间点，量很大，建议分开来处理。
@@ -105,7 +105,7 @@ awk '{ if(NR==1) print "IID icd"; else if (NF==1) print $1 " NA"; else print $0"
 ```
 <br/>
 
-#2.4. 对表型数据进行 GWAS 运行之前的处理
+## #2.4. 对表型数据进行 GWAS 运行之前的处理
 
 提取需要研究的表型数据和相关的covariates，比如 age, sex, PCs。一般来说，quantitative的表型数据要 adjust for covariates 和转化成正态分布，这个可以在R里面用下面的命令来实现。
 对于疾病的binary 表型，只需要把需要 adjust 的covarites 和表型数据放在同一个表型数据文件里面，然后在 GWAS里面的命令指明哪个是表型，哪些是 covariates。
@@ -122,7 +122,7 @@ trait_inv = qnorm((rank(trait_res,na.last="keep")-0.5) / length(na.omit(trait_re
 ![GWAS](./pictures/GWAS.jpg)
 <br/>
 
-#3.1 专人在服务器上运行
+## #3.1 专人在服务器上运行
 目前GWAS 由专人负责运行，一般来说就是通过下面这样的PLINK命令来跑
 
 ```
@@ -133,7 +133,7 @@ for chr in {1..22}; do
 上述命令顺利跑完后，确认生成的文件没有问题后，可以把所有的染色体的数据串到一起，形成一个单一的 XXX.gwas.gz 文件。鉴于2千多万个SNP，文件太大，我们一般只保留：P<0.01的SNP 以及那些在Hapmap3 里面的SNP。最终合并成的 XXX.gwas.gz 文件用 TAB 分割，CHR:POS 排好序，要不然 LocusZoom 那样的软件不能处理。也可以用 tabix -f -S 1 -s 1 -b 2 -e 2 XXX.gwas.gz 对数据进行索引，便于 LocalZoom 那样的软件去处理。
 <br/>
 
-#3.2 公开的GWAS数据进行练手，或对比
+## #3.2 公开的GWAS数据进行练手，或对比
 
 如果下载下来的数据是VCF 格式，可以用 bcftools query 提取需要的 data fileds，生成 TXT 格式。
 bcftools query 的使用，请参考 http://samtools.github.io/bcftools/bcftools.html
@@ -154,7 +154,7 @@ UKB GWAS 完整的分析结果，网上发布
 ```
 <br/>
 
-#3.3 网上下载下来的GWAS数据的格式化
+## #3.3 网上下载下来的GWAS数据的格式化
 别人发布到网上的数据，可能不是用rsID，而是类似 CHR:POS_REF_ALT 这样的格式。
 这个时候可以通过下面这么的代码，跟前面提到的 UKB上将近一亿个SNP的参考信息进行合并，然后改成 rsID 格式。
 第一步是提取UKB里面的位点。如果你的GWAS的位点有几百万甚至几千万个SNP，这个时候最好是对每一个 CHR 进行分开处理。
@@ -178,7 +178,7 @@ done
 # #4. 单个 GWAS 数据的分析
 <br/>
 
-#4.1 画一个 Manhattan Plot, 除了公用的 qqman package 之外，可以用我的 mhplot.R 和 mhplot.f.R 代码，前者 call 后者。
+## #4.1 画一个 Manhattan Plot, 除了公用的 qqman package 之外，可以用我的 mhplot.R 和 mhplot.f.R 代码，前者 call 后者。
 我的代码可以：多个图画在同一页上，红色显示 rare variants, 添加绿色的已发表的SNP，等。
 为了保证所有的图的横坐标位置对齐，我的代码用到了每个染色体的地标（dibiao），可以用下面的代码生成
 
@@ -190,7 +190,7 @@ for chr in {1..22} X; do
 done
 ```
 
-#4.2 从GWAS catalog (https://www.ebi.ac.uk/gwas) 寻找该GWAS的文章和SNP，
+## #4.2 从GWAS catalog (https://www.ebi.ac.uk/gwas) 寻找该GWAS的文章和SNP，
 
 
 下面示意图，来自 2018年的一篇文章（PMID: 30297969）
@@ -206,7 +206,7 @@ compareB.R 相当于一个前台，让用户提供两个比较的文件的具体
 <br/>
 
 
-#4.3 提取GWAS里面的的统计显著性（significant）信号，添加简单的注释（比如所在的基因名称）
+## #4.3 提取GWAS里面的的统计显著性（significant）信号，添加简单的注释（比如所在的基因名称）
 
 使用 PLINK (https://www.cog-genomics.org/plink/1.9/) 左边菜单中的 Report postprocess 中的 3个命令（--annotate, --clump, --gene-report）
 
@@ -227,7 +227,7 @@ done
 ```
 <br/>
 
-#4.4 如果不考虑 SNP之间的LD
+## #4.4 如果不考虑 SNP之间的LD
 
 通过LD的计算来找到GWAS数据里面的independent top hits，也有一些问题（比如g1k的LD不是金标准，r2也不是最合理的筛选办法），并且计算量很大。 
 下面这个简单的代码可以寻找GWAS数据里面每1MB区间的top SNP，不考虑LD。
@@ -249,7 +249,7 @@ bedtools intersect -a A.bed -b B.bed -wo
 有关问题，请参考我跟对方的沟通 https://github.com/statgen/locuszoom-hosted/issues/19
 <br/>
 
-#4.5 生成 PRS
+## #4.5 生成 PRS
 
 我们可以根据任何一个GWAS，来计算UKB里面每个人的PRS，当然也可以计算任何人包括我们自己的PRS，只要我们有基因数据就行。
 相关的方法学，请参考经典版的PLINK （http://zzz.bwh.harvard.edu/plink/profile.shtml）和新版的PLINK1.9 （https://www.cog-genomics.org/plink/1.9/score）
@@ -319,13 +319,13 @@ corrplot(beta, is.corr=F, method='color', type='full', addCoef.col='black', numb
 ![Figure corrplot](./pictures/corrplot.png)
 
 
-#5.1. genetic correlation 分析, LDSC (https://github.com/bulik/ldsc)
+## #5.1. genetic correlation 分析, LDSC (https://github.com/bulik/ldsc)
 
 其实，美国的 Broad Insitute ，已经用 LDSC 把几百个 traits 的 h2 和他们两两之间的基因相关性都计算出来，公布出来了 http://ldsc.broadinstitute.org 
 请
 <br/>
 
-#5.2. 因果分析 Mendelian Randomization
+## #5.2. 因果分析 Mendelian Randomization
 
 MR的文章已经发表了无数篇，方法至少十几种。
 对于原始的GWAS数据，我们可以采用 GSMR进行流程化处理 https://cnsgenomics.com/software/gcta/#GSMR
@@ -349,7 +349,7 @@ mr_plot(mr_input(XGb, XGse, YGb, YGse))
 ```
 <br/>
 
-#5.3. TWAS (http://gusevlab.org/projects/fusion/)
+## #5.3. TWAS (http://gusevlab.org/projects/fusion/)
 <br/>
 
 
