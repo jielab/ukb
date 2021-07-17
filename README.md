@@ -5,7 +5,7 @@
 
 ## 这是初二生物学课本里面的内容哦！
 
-![middle school](./pictures/middle.jpg)
+![middle school](./images/middle.jpg)
 
 ## #1.1 HAPMAP3 genotype 数据, 一般作为 LD 计算的 reference panel
 
@@ -42,7 +42,7 @@
 
 # #2.  提取 UKB 表型数据
 
-![UKB](./pictures/ukb.png)
+![UKB](./images/ukb.png)
 
 ## #2.1 关于UKB 基因数据
 > 首先要明确，UKB的基因数据很大，所有申请者都能得到一样的数据（样本的ID不一样），一般下载到服务器上去储存和使用。
@@ -111,7 +111,7 @@ WINDOWS电脑建议安装系统自带的 Ubuntu Linux系统，然后用 cd /mnt/
 
 # #3. GWAS 运行
 
-![GWAS](./pictures/GWAS.jpg)
+![GWAS](./images/GWAS.jpg)
 <br/>
 
 ## #3.1 专人在服务器上运行
@@ -183,14 +183,14 @@ done
 
 
 下面示意图，来自 2018年的一篇文章（PMID: 30297969）
-![Figure Z](./pictures/T2D.Z.png)
+![Figure Z](./images/T2D.Z.png)
 
 但是 X 的BETA最好是正数，免得出来这样看起来很强的“假阳性”，也会有“假阴性”。
-![Figure beta-Wrong](./pictures/beta.wrong.png)
+![Figure beta-Wrong](./images/beta.wrong.png)
 
 请参照 scripts 文件夹里面的 compareB.R 代码， 该代码可以快速画出下面这样的图。请注意，两个文件的第一行不能以 “#” 开头。
 compareB.R 相当于一个前台，让用户提供两个比较的文件的具体信息。然后，前台会把用户提交的信息交给后端的 compareB.f.R，不要去碰这个后端的代码。
-![Figure beta](./pictures/beta.jpg)
+![Figure beta](./images/beta.jpg)
 
 <br/>
 
@@ -269,16 +269,16 @@ LDpred2 https://privefl.github.io/bigsnpr/articles/LDpred2.html
 <br/>
 关于“三件套”之间的逻辑关系，The putative causal effect of type 2 diabetes in risk of cataract: a Mendelian randomization study in East Asian 里的一张图，给了比较好的总结
 
-![Figure group-3](./pictures/grp3-basic.jpg)
+![Figure group-3](./images/grp3-basic.jpg)
 
 2020年哈佛大学公卫学院的梁黎明，以asthma为例，写了一篇文章进行了讲述。
 Investigating asthma heterogeneity through shared and distinct genetics: Insights from genome-wide cross-trait analysis (http://https://pubmed.ncbi.nlm.nih.gov/32693092/)
 
-![Figure group-3](./pictures/grp3-main.jpg)
+![Figure group-3](./images/grp3-main.jpg)
 
 还有一篇2020年的综述，也值得一读：From GWAS to Function: Using Functional Genomics to Identify the Mechanisms Underlying Complex Diseases (http://https://pubmed.ncbi.nlm.nih.gov/32477401/)
 
-![Figure function](./pictures/grp3-function.jpg) 
+![Figure function](./images/grp3-function.jpg) 
 
 
 三件套，基本就是3行代码的事。其它的代码都是胶水（glue）和信号灯（when and who）。
@@ -305,7 +305,7 @@ corrplot(beta, is.corr=F, method='color', type='full', addCoef.col='black', numb
 ```
 画出下面这样的图
 
-![Figure corrplot](./pictures/corrplot.png)
+![Figure corrplot](./images/corrplot.png)
 
 
 ## #5.1. genetic correlation 分析, LDSC (https://github.com/bulik/ldsc)
@@ -366,4 +366,4 @@ Mendelian Randomization 入门介绍
 
 学会使用公开的 GWAS 数据，借力、空手道、站在巨人的肩膀上！
 
-![Figure portal](./pictures/portal.png)
+![Figure portal](./images/portal.png)
