@@ -23,6 +23,7 @@ compareB <-function(
 	names(dat1) <- paste0( c("SNP", "EA", "NEA", "EAF", "BETA", "SE", "P"), "_1")
 	names(dat2) <- paste0( c("SNP", "EA", "NEA", "EAF", "BETA", "SE", "P"), "_2")
 	dat <- merge(dat1, dat2, by.x="SNP_1", by.y="SNP_2")
+	for (var in c("EA_1", "NEA_1", "EA_2", "NEA_2")) { dat[[var]] <- toupper(dat[[var]]) }
 	if(nrow(dat) > 1000) { dat <- subset(dat, P_1>5) }
 	# dat <- na.omit(dat)
 	#for (var in c('EAF_1', 'EAF_2', 'BETA_1', 'BETA_2', 'P_1', 'P_2')) { dat[[var]] <- as.numeric(dat[[var]]) }
